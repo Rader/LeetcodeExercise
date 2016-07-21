@@ -1,0 +1,255 @@
+using System;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace LeetcodeExercise.Tests
+{
+    [TestFixture]
+    public class Lc54InsertIntervalTest
+    {
+        [Test]
+        public void BinarySearchTest()
+        {
+            IList<Interval> intervals = new List<Interval>(4);
+            intervals.Add(new Interval(1, 3));
+            intervals.Add(new Interval(6, 9));
+            intervals.Add(new Interval(10, 12));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            int result = -1;
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 0);
+            Assert.AreEqual(0, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 1);
+            Assert.AreEqual(0, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 2);
+            Assert.AreEqual(0, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 3);
+            Assert.AreEqual(0, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 4);
+            Assert.AreEqual(1, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 6);
+            Assert.AreEqual(1, result);
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 7);
+            Assert.AreEqual(1, result);
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 9);
+            Assert.AreEqual(1, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 10);
+            Assert.AreEqual(2, result);
+
+            result = obj.BinarySearch(intervals, 0, intervals.Count - 1, 13);
+            Assert.AreEqual(3, result);
+        }
+
+        [Test]
+        public void InsertTest_EmptyList()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(5, 7));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(5, 7);
+            intervals = obj.Insert(intervals, newInterval);
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_AsFirst()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(9, 10));
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(5, 7));
+            intervalsExpected.Add(new Interval(9, 10));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(5, 7);
+            intervals = obj.Insert(intervals, newInterval);
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_AsLast()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(5, 7));
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(5, 7));
+            intervalsExpected.Add(new Interval(9, 10));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(9, 10);
+            intervals = obj.Insert(intervals, newInterval);
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_NeedMerge()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(1, 3));
+            intervals.Add(new Interval(6, 9));
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(1, 5));
+            intervalsExpected.Add(new Interval(6, 9));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(2, 5);
+            intervals = obj.Insert(intervals, newInterval);
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_NeedMerge2()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(1, 2));
+            intervals.Add(new Interval(3, 5));
+            intervals.Add(new Interval(6, 7));
+            intervals.Add(new Interval(8, 10));
+            intervals.Add(new Interval(12, 16));
+            Console.WriteLine("Original:" + intervals.Print());
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(1, 2));
+            intervalsExpected.Add(new Interval(3, 10));
+            intervalsExpected.Add(new Interval(12, 16));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(4, 9);
+            intervals = obj.Insert(intervals, newInterval);
+            Console.WriteLine(intervals.Print());
+            Console.WriteLine(intervalsExpected.Print());
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_NeedMerge3()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(1, 2));
+            intervals.Add(new Interval(3, 5));
+            intervals.Add(new Interval(6, 7));
+            intervals.Add(new Interval(8, 10));
+            intervals.Add(new Interval(12, 16));
+            Console.WriteLine("Original:" + intervals.Print());
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(1, 2));
+            intervalsExpected.Add(new Interval(3, 17));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(4, 17);
+            intervals = obj.Insert(intervals, newInterval);
+            Console.WriteLine(intervals.Print());
+            Console.WriteLine(intervalsExpected.Print());
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_NeedMerge4()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(3, 5));
+            intervals.Add(new Interval(6, 7));
+            intervals.Add(new Interval(8, 10));
+            intervals.Add(new Interval(12, 16));
+            Console.WriteLine("Original:" + intervals.Print());
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(2, 11));
+            intervalsExpected.Add(new Interval(12, 16));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(2, 11);
+            intervals = obj.Insert(intervals, newInterval);
+            Console.WriteLine(intervals.Print());
+            Console.WriteLine(intervalsExpected.Print());
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+
+        [Test]
+        public void InsertTest_NeedMerge5()
+        {
+            IList<Interval> intervals = new List<Interval>(2);
+            intervals.Add(new Interval(3, 5));
+            intervals.Add(new Interval(6, 7));
+            intervals.Add(new Interval(8, 10));
+            intervals.Add(new Interval(12, 16));
+            Console.WriteLine("Original:" + intervals.Print());
+
+            IList<Interval> intervalsExpected = new List<Interval>(2);
+            intervalsExpected.Add(new Interval(2, 17));
+
+            Lc54InsertInterval obj = new Lc54InsertInterval();
+            var newInterval = new Interval(2, 17);
+            intervals = obj.Insert(intervals, newInterval);
+            Console.WriteLine(intervals.Print());
+            Console.WriteLine(intervalsExpected.Print());
+            Assert.IsTrue(intervals.EqualToList(intervalsExpected));
+        }
+    }
+
+    public class IntervalComparer : IEqualityComparer<Interval>
+    {
+        public bool Equals(Interval x, Interval y)
+        {
+            return (x.start == y.start) && (x.end == y.end);
+        }
+
+        public int GetHashCode(Interval obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
+    public static class IntervalListExtension
+    {
+        public static bool EqualToList(this IList<Interval> intervals, IList<Interval> otherIntervals)
+        {
+            if (intervals.Count != otherIntervals.Count)
+                return false;
+
+
+            IntervalComparer comparer = new IntervalComparer();
+            for (int i = 0; i < intervals.Count; i++)
+            {
+                if (!comparer.Equals(intervals[i], otherIntervals[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static string Print(this IList<Interval> intervals)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[");
+            for (int i = 0; i < intervals.Count; i++)
+            {
+                sb.AppendFormat("[{0},{1}]", intervals[i].start, intervals[i].end);
+                if (i != intervals.Count - 1)
+                {
+                    sb.Append(",");
+                }
+            }
+            sb.Append("]");
+
+            return sb.ToString();
+        }
+
+    }
+        
+}
+
