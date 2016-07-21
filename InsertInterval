@@ -1,0 +1,119 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ConsoleApplication1
+{
+    
+    public class Solution2
+    {
+        public IList<Interval> Insert(IList<Interval> intervals, Interval newInterval)
+        {
+            // add to the empty list
+            if(intervals.Count==0)
+            {
+                intervals.Add(newInterval);
+                return intervals;
+            }
+
+            // Insert at the beginning
+            if (newInterval.end < intervals[0].start)
+            {
+                intervals.Insert(0, newInterval);
+                return intervals;
+            }
+
+            // Append to the end
+            if (newInterval.start > intervals[intervals.Count -1 ].end)
+            {
+                intervals.Add(newInterval);
+                return intervals;
+            }
+
+            int posStart = BinarySearch(intervals, 0, intervals.Count - 1, newInterval.start);
+            int posEnd = BinarySearch(intervals, 0, intervals.Count - 1, newInterval.end);
+            
+            if(posStart==posEnd)
+            {
+                if (newInterval.end < intervals[posStart].start)
+                {
+                    // no overlap, so insert new
+                    intervals.Insert(posStart, newInterval);
+                }
+                else
+                {
+                    // Has overlap so merge
+                    intervals[posStart].start = Math.Min(intervals[posStart].start, newInterval.start);
+                    intervals[posEnd].end = Math.Max(intervals[posStart].end, newInterval.end);                    
+                }
+            }
+            else if(posStart < posEnd) // Has overlap
+            {
+                intervals[posStart].start = Math.Min(intervals[posStart].start, newInterval.start);
+                // new end is larger than one any one of the list
+                if(posEnd == intervals.Count)
+                {
+                    posEnd--;  // posEnd = intervals.Count -1 ;
+                    intervals[posEnd].end = newInterval.end; // expand the last node, and now we found the new end in the last node.
+                }
+
+                if(newInterval.end < intervals[posEnd].start)
+                {
+                    intervals[posStart].end = Math.Max(intervals[posStart].end, newInterval.end); // always be "newInterval.end"
+                    // remove intervals from the next one in list
+                    posStart++;
+                    for (; posStart < posEnd; posStart++)
+                    {
+                        intervals.RemoveAt(posStart);
+                    }
+                }
+                else if(newInterval.end <= intervals[posEnd].end)
+                {
+                    // The end of new interval is included in a node
+                    intervals[posStart].end = intervals[posEnd].end;
+
+                    // remove intervals from the next one in list, include the one contains the "end" of new interval
+                    posStart++;
+                    for (; posStart <= posEnd; posStart++)
+                    {
+                        intervals.RemoveAt(posStart);
+                    }
+                }
+                else
+                {
+                    throw new Exception("Impossible that: newInterval.end > intervals[posEnd].end");
+                }
+            }
+            else
+            {
+                throw new Exception("Impossible that: posStart > posEnd");
+            }
+            return intervals;
+        }
+
+        public int BinarySearch(IList<Interval> intervals, int begin, int end, int value)
+        {
+            if (begin > end)
+                return begin;
+
+            int middle = (begin + end) / 2;
+            if(intervals[middle].end < value)
+            {
+                // searth right part
+                return BinarySearch(intervals, middle + 1, end, value);
+                
+            }
+            else if(intervals[middle].start > value)
+            {
+                // search left part
+                return BinarySearch(intervals, begin, middle - 1, value);
+            }
+            else
+            {
+                // value in range
+                return middle;
+            }
+        }
+
+    }
+}
