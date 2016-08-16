@@ -1,0 +1,24 @@
+using NUnit.Framework;
+
+namespace LeetcodeExercise.Tests
+{
+    [TestFixture]
+    public class Lc3LongestSubstringNoRepeatingCharTest
+    {
+        [Test]
+        public void LengthOfLongestSubstring_Test()
+        {
+            Lc3LongestSubstringNoRepeatingChar obj = new Lc3LongestSubstringNoRepeatingChar();
+
+            Assert.AreEqual(2, obj.LengthOfLongestSubstring("au"));
+
+            Assert.AreEqual(3, obj.LengthOfLongestSubstring("abcabcbb"));
+
+            Assert.AreEqual(1, obj.LengthOfLongestSubstring("bbbbb"));
+
+            Assert.AreEqual(3, obj.LengthOfLongestSubstring("pwwkew"));
+
+            Assert.AreEqual(4, obj.LengthOfLongestSubstring("abcacdbcb"));
+        }
+    }
+}
