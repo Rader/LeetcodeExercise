@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+
+namespace LeetcodeExercise
+{
+    public class Lc3LongestSubstringNoRepeatingChar
+    {
+        public int LengthOfLongestSubstring_2(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return 0;
+            if (s.Length == 1)
+                return 1;
+
+            int i = 0;
+            int maxSubLen = 1;
+            int j = i + 1;
+            for (; j < s.Length;j++)
+            {
+                int k = i;
+                for (; k < j; k++)
+                {
+                    if (s[k] == s[j])  // find repeat char
+                    {
+                        //maxSubLen = Math.Max(maxSubLen, j - k); // len of substring exclude the repeat char
+                        i = k + 1;
+                        break;
+                    }
+                }
+
+                if (k == j) // no repeat
+                    maxSubLen = Math.Max(maxSubLen, j - i + 1); // include begin and end char of substring
+            }
+
+            return maxSubLen;
+        }
+
+        public int LengthOfLongestSubstring(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return 0;
+
+            int maxSubLen = 0;int start = -1;
+            IDictionary<char, int> dict = new Dictionary<char, int>();            
+            for (int i = 0; i < s.Length; i++)
+            {
+                int pos;
+                if(dict.TryGetValue(s[i],out pos)) // repeat char
+                {
+                    start = Math.Max(start,pos);// new start
+                }
+                dict[s[i]] = i; 
+                maxSubLen = Math.Max(maxSubLen, i - start);
+            }
+
+            return maxSubLen;
+        }
+    }
+}
