@@ -20,16 +20,17 @@ namespace leetcode {
     Solution: Push nodes into a stack and then pop them one by one, we get the least significant digits first. 
     then we can add numbers as normal. The result nodes push to a stack, and then we read them again, to build the result list.
     So we get the most significant digits first.
+    
+    update: build the result list from tail to header, so the stack for sum result can be avoid.
 		*/
 		ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
 			auto s1 = toStack(l1);
 			auto s2 = toStack(l2);
-			auto ssum = new stack<ListNode*>();
 
-			int ex = 0;
-			while (!s1->empty() || !s2->empty() || ex > 0)
+			ListNode* lsum = nullptr;
+			int sum = 0;
+			while (!s1->empty() || !s2->empty() || sum > 0)
 			{
-				int sum = ex;
 				if (!s1->empty()) {
 					sum += s1->top()->val;
 					s1->pop();
@@ -39,13 +40,13 @@ namespace leetcode {
 					s2->pop();
 				}
 
-				ssum->push(new ListNode(sum % 10));// save sum result
-				ex = sum / 10;
+				auto ltmp = new ListNode(sum % 10);
+				ltmp->next = lsum;
+				lsum = ltmp;
+				sum = sum / 10;
 			}
-
+			
 			delete s1, s2;
-			auto lsum = toList(ssum);
-			delete ssum;
 			return lsum;
 		}
 
@@ -59,19 +60,5 @@ namespace leetcode {
 
 			return s;
 		}
-
-		ListNode* toList(stack<ListNode*>* s) {
-			auto lsum = new ListNode(0);
-			auto ltmp = lsum;
-			while (!s->empty())
-			{
-				ltmp->next = s->top();
-				ltmp = ltmp->next;
-				s->pop();
-			}
-
-			return lsum->next;
-		}
-
 	};
 }
