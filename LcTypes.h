@@ -8,6 +8,14 @@ namespace leetcode {
 		ListNode(int x) : val(x), next(nullptr) {}
 	};
 
+	/* Definition for a binary tree node.*/
+	 struct TreeNode {
+	     int val;
+	     TreeNode *left;
+	     TreeNode *right;
+	     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+	 };
+
 	static ListNode* BuildList(int* numbers, int count) {
 		ListNode* head = new ListNode(numbers[0]);
 		auto tail = head;
