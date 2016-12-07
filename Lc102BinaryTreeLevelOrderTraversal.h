@@ -32,5 +32,52 @@ namespace leetcode {
 
 			return vlevels;
 		}
+		
+		vector<vector<int>> levelOrder_SingleQueue(TreeNode* root) {
+			vector<vector<int>> vlevels;
+			if (root == nullptr)
+				return vlevels;
+
+			queue<TreeNode*> queue;
+			queue.push(root);
+			while (!queue.empty())
+			{
+				int parentsCount = queue.size();
+				vector<int> vlevel;
+				while (parentsCount>0)
+				{
+					TreeNode* parent = queue.front();
+					vlevel.push_back(parent->val);
+					if (parent->left != nullptr) queue.push(parent->left); 
+					if (parent->right != nullptr) queue.push(parent->right);
+
+					queue.pop();
+					parentsCount--;
+				}
+				vlevels.push_back(vlevel);
+			}	
+
+			return vlevels;
+		}
+		
+		void levelOrderTest() {
+			TreeNode* root = new TreeNode(1);
+			root->left = new TreeNode(2);
+			root->right = new TreeNode(3);
+			root->left->left = new TreeNode(4);
+			root->left->left->left = new TreeNode(5);
+
+			vector<vector<int>> expected;
+			expected.push_back(vector<int>{1});
+			expected.push_back(vector<int>{2, 3});
+			expected.push_back(vector<int>{4});
+			expected.push_back(vector<int>{5});
+
+			auto result = levelOrder(root);
+			assert(expected == result);
+
+			auto result2 = levelOrder_SingleQueue(root);
+			assert(expected == result2);
+		}
 	};
 }
