@@ -22,10 +22,10 @@ func findRightInterval(intervals []Interval) []int {
 	})
 
 	result := make([]int, len(intervals))
-	for _, itv := range intervals {
+	for i, itv := range intervals {
 		//index of an interval before sort
 		oldIdx := idxMap[itv.Start]
-		found := binarySearch(intervals, itv.End)
+		found := binarySearch(intervals, i, itv.End)
 		if found != -1 {
 			result[oldIdx] = idxMap[intervals[found].Start]
 		} else {
@@ -36,9 +36,8 @@ func findRightInterval(intervals []Interval) []int {
 }
 
 //find the min index of an interval whose start point >= end
-func binarySearch(intervals []Interval, point int) int {
+func binarySearch(intervals []Interval, begin int, point int) int {
 	idx := -1 //default, not found
-	begin := 0
 	end := len(intervals) - 1
 	for begin <= end {
 		if begin == end { //last try, should end loop
